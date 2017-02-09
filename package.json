@@ -1,0 +1,19 @@
+{
+  "name": "node-micro",
+  "version": "0.0.1",
+  "description": "Simple NodeJS microservice app",
+  "main": "master.js",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "express": "^4.14.1",
+    "express-fileupload": "0.0.6",
+    "jimp": "^0.2.27",
+    "request": "^2.79.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "gberginc",
+  "license": "ISC"
+}

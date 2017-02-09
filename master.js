@@ -1,0 +1,132 @@
+const express = require('express')  
+var bodyParser = require('body-parser');
+var fileUpload = require('express-fileupload')
+var request = require('request')
+
+var os = require('os');
+
+const app = express()  
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(fileUpload())
+
+const port = 8003
+
+var dbEndpoint
+var storageEndpoint
+
+if (process.argv.length < 3) {
+    console.log("Usage: node db.js <KEYVALUESTORE_ENDOPOINT>")
+    process.exit()
+} else {
+    kvEndpoint = 'http://' + process.argv[2]
+}
+
+// Get Master IP and try to report it to the key-value registry
+require('dns').lookup(require('os').hostname(), function (err, address, fam) {
+	// POST the address to the registry
+	var options = {
+		uri: kvEndpoint + "/masterendpoint",
+		method: 'POST',
+		json: { "value": address + ":" + port }
+	}
+
+	request(options, function(error, response, body) {
+		// If post was successful, continue, otherwise inform the user and exit
+		if (!error && response.statusCode == 200) {
+			console.log("Master endpoint registered")
+
+			getServiceEndpoints()
+		} else {
+			console.log("Error has occurred: ", response.statusCode)
+			process.exit()
+		}
+	})
+})
+
+app.post('/task', (req, res) => {
+	// Make a new task.
+	request.post({uri: dbEndpoint + '/task'}, (dbError, dbResponse, dbBody) => {
+		if (!dbError && dbResponse.statusCode == 200) {
+			// If the task was successful, we should also store the image in storage.
+			taskId = dbBody
+
+			var formData = {
+				image: req.files.image.data
+			}
+
+			var postImage = {
+				uri: storageEndpoint + '/upload/' + taskId,
+				formData: formData
+			}
+
+			request.post(postImage, (storageError, storageResponse, storageBody) => {
+				if (!storageError && storageResponse.statusCode == 200) {
+					res.send()
+				} else {
+					res.status(500).send("Error uploading image: " + storageError)
+				}
+			})
+		} else {
+			res.status(500).send("Error creating task: " + dbError)
+		}
+	})
+})
+
+app.get('/task/next', (req, res) => {
+	request.get({uri: dbEndpoint + '/task/next'}).pipe(res)
+})
+
+app.get('/task/:taskId/download', (req, res) => {
+	var taskId = req.params.taskId
+
+	// Request a download from the storage.
+	request.get({uri: storageEndpoint + '/download/' + taskId}).pipe(res)
+})
+
+app.post('/task/:taskId/finish', (req, res) => {
+	var taskId = req.params.taskId
+
+	request.post({uri: dbEndpoint + '/task/' + taskId + '/finish'}).pipe(res)
+})
+
+app.get('/task/:taskId/ready', (req, res) => {
+	var taskId = req.params.taskId
+
+	request.get({uri: dbEndpoint + '/task/' + taskId}, (dbError, dbStatus, dbBody) => {
+		if (!dbError && dbStatus.statusCode == 200) {
+			data = JSON.parse(dbBody)
+			res.send(data.state == 2)
+		} else {
+			res.status(dbStatus.statusCode).send(dbError)
+		}
+	})
+})
+
+function getServiceEndpoints() {
+    request(kvEndpoint + '/dbendpoint', (error, response, body) => {
+    	if (!error && response.statusCode == 200) {
+	    	dbEndpoint = 'http://' + body
+	    } else {
+	    	console.log("Error getting DB service. Exiting...")
+	    	process.exit()
+	    }
+    })
+
+    request(kvEndpoint + '/storageendpoint', (error, response, body) => {
+    	if (!error && response.statusCode == 200) {
+    		storageEndpoint = 'http://' + body
+	    } else {
+	    	console.log("Error getting Storage service. Exiting...")
+	    	process.exit()
+	    }
+    })
+}
+
+app.listen(port, (err) => {  
+    if (err) {
+        return console.log('something bad happened', err)
+    }
+
+    console.log(`Master is listening on ${port}`)
+})
