@@ -24,25 +24,28 @@ if (process.argv.length < 3) {
 
 // Get Master IP and try to report it to the key-value registry
 require('dns').lookup(require('os').hostname(), function (err, address, fam) {
+	setTimeout(registerService, 0, 'masterendpoint', address)
+})
+
+function registerService(service, address) {
 	// POST the address to the registry
 	var options = {
-		uri: kvEndpoint + "/masterendpoint",
-		method: 'POST',
+		uri: kvEndpoint + "/" + service,
 		json: { "value": address + ":" + port }
 	}
 
-	request(options, function(error, response, body) {
+	request.post(options, function(error, response, body) {
 		// If post was successful, continue, otherwise inform the user and exit
 		if (!error && response.statusCode == 200) {
 			console.log("Master endpoint registered")
 
 			getServiceEndpoints()
 		} else {
-			console.log("Error has occurred: ", response.statusCode)
-			process.exit()
+			console.log("Key-value store is not available")
+			setTimeout(registerService, 1000, service, address)
 		}
 	})
-})
+}
 
 app.post('/task', (req, res) => {
 	// Make a new task.
@@ -62,6 +65,9 @@ app.post('/task', (req, res) => {
 
 			request.post(postImage, (storageError, storageResponse, storageBody) => {
 				if (!storageError && storageResponse.statusCode == 200) {
+					// Since we have the confirmation that the requested image is successfully
+					// stored, we can change the status of the task to "ready"
+					request.post({uri: dbEndpoint + '/task/' + taskId + '/ready'})
 					res.send()
 				} else {
 					res.status(500).send("Error uploading image: " + storageError)
@@ -104,29 +110,39 @@ app.get('/task/:taskId/ready', (req, res) => {
 })
 
 function getServiceEndpoints() {
-    request(kvEndpoint + '/dbendpoint', (error, response, body) => {
-    	if (!error && response.statusCode == 200) {
-	    	dbEndpoint = 'http://' + body
-	    } else {
-	    	console.log("Error getting DB service. Exiting...")
-	    	process.exit()
-	    }
-    })
+	if (!dbEndpoint) {
+		request(kvEndpoint + '/dbendpoint', (error, response, body) => {
+			if (!error && response.statusCode == 200) {
+				dbEndpoint = 'http://' + body
+			} else {
+				console.log("Error getting DB service.")
+			}
+		})
+	}
 
-    request(kvEndpoint + '/storageendpoint', (error, response, body) => {
-    	if (!error && response.statusCode == 200) {
-    		storageEndpoint = 'http://' + body
-	    } else {
-	    	console.log("Error getting Storage service. Exiting...")
-	    	process.exit()
-	    }
-    })
+	if (!storageEndpoint) {
+		request(kvEndpoint + '/storageendpoint', (error, response, body) => {
+			if (!error && response.statusCode == 200) {
+				storageEndpoint = 'http://' + body
+			} else {
+				console.log("Error getting Storage service.")
+			}
+		})
+	}
+
+	if (dbEndpoint && storageEndpoint) {
+		startService()
+	} else {
+		setTimeout(getServiceEndpoints, 1000)
+	}
 }
 
-app.listen(port, (err) => {  
-    if (err) {
-        return console.log('something bad happened', err)
-    }
+function startService() {
+	app.listen(port, (err) => {
+		if (err) {
+			return console.log('something bad happened', err)
+		}
 
-    console.log(`Master is listening on ${port}`)
-})
+		console.log(`Master is listening on ${port}`)
+	})
+}

@@ -14,7 +14,7 @@ var masterEndpoint
 var storageEndpoint
 
 if (process.argv.length < 3) {
-    console.log("Usage: node db.js <KEYVALUESTORE_ENDOPOINT>")
+    console.log("Usage: node worker.js <KEYVALUESTORE_ENDOPOINT>")
     process.exit()
 } else {
     kvEndpoint = 'http://' + process.argv[2]
@@ -74,24 +74,31 @@ function doWork() {
 		}
 	})
 }
-setTimeout(doWork, 0)
 
 function getServiceEndpoints() {
-    request(kvEndpoint + '/masterendpoint', (error, response, body) => {
-    	if (!error && response.statusCode == 200) {
-	    	masterEndpoint = 'http://' + body
-	    } else {
-	    	console.log("Error getting Master service. Exiting...")
-	    	process.exit()
-	    }
-    })
+	if (!masterEndpoint) {
+		request(kvEndpoint + '/masterendpoint', (error, response, body) => {
+			if (!error && response.statusCode == 200) {
+				masterEndpoint = 'http://' + body
+			} else {
+				console.log("Error getting Master service.")
+			}
+		})
+	}
 
-    request(kvEndpoint + '/storageendpoint', (error, response, body) => {
-    	if (!error && response.statusCode == 200) {
-    		storageEndpoint = 'http://' + body
-	    } else {
-	    	console.log("Error getting Storage service. Exiting...")
-	    	process.exit()
-	    }
-    })
+	if (!storageEndpoint) {
+		request(kvEndpoint + '/storageendpoint', (error, response, body) => {
+			if (!error && response.statusCode == 200) {
+				storageEndpoint = 'http://' + body
+			} else {
+				console.log("Error getting Storage service.")
+			}
+		})
+	}
+
+	if (masterEndpoint && storageEndpoint) {
+		doWork()
+	} else {
+		setTimeout(getServiceEndpoints, 1000)
+	}
 }

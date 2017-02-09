@@ -23,7 +23,7 @@ app.post('/:key/', function(req, res) {
 	var key = req.params.key
 	var value = req.body.value
 
-	console.log(req.body)
+	console.log(key + "=" + value)
 
 	keyValueStore[key] = value
 	res.send('')
