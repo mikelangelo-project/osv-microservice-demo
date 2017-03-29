@@ -2,6 +2,7 @@ const express = require('express')
 var bodyParser = require('body-parser');
 var request = require('request')
 var os = require('os');
+var ip = require('ip');
 
 const app = express()  
 app.use(bodyParser.json()); // support json encoded bodies
@@ -20,9 +21,7 @@ if (process.argv.length < 3) {
 }
 
 // Get DB IP and try to report it to the key-value registry
-require('dns').lookup(require('os').hostname(), function (err, address, fam) {
-	setTimeout(registerService, 0, 'dbendpoint', address)
-})
+setTimeout(registerService, 0, 'dbendpoint', ip.address())
 
 function registerService(service, address) {
 	// POST the address to the registry

@@ -2,6 +2,7 @@ const express = require('express')
 var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload')
 var request = require('request')
+var ip = require('ip');
 
 var os = require('os');
 
@@ -20,9 +21,7 @@ if (process.argv.length < 3) {
 }
 
 // Get DB IP and try to report it to the key-value registry
-require('dns').lookup(require('os').hostname(), function (err, address, fam) {
-	setTimeout(registerService, 0, 'storageendpoint', address)
-})
+setTimeout(registerService, 0, 'storageendpoint', ip.address())
 
 function registerService(service, address) {
 	// POST the address to the registry
