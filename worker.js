@@ -29,7 +29,9 @@ function doWork() {
 
 			console.log("Working on task " + task.id)
 			if (task && task.id != -1) {
-				var imagePath = __dirname + '/worker/' + task.id + '.png'
+				var imagePath = __dirname + '/data/worker/' + task.id + '.png'
+				imagePath = imagePath.replace("//", "/"); // if _dirname is /, then we get //worker/1.png
+
 				request.get({uri: masterEndpoint + '/task/' + task.id + '/download'}).pipe(fs.createWriteStream(imagePath)).on('close', () => {
 					console.log("\tprocessing " + imagePath)
 

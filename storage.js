@@ -69,7 +69,8 @@ app.get('/download/:taskId', (req, res) => {
 })
 
 function imagePath(taskId) {
-	return __dirname + '/storage/' + taskId + '.png'
+	path = __dirname + '/data/storage/' + taskId + '.png'
+	return path.replace("//", "/"); // if _dirname is /, then we get //storage/1.png
 }
 
 function startService() {
