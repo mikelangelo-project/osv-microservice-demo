@@ -13,11 +13,11 @@ app.use(fileUpload())
 var masterEndpoint
 var storageEndpoint
 
-if (process.argv.length < 3) {
-    console.log("Usage: node worker.js <KEYVALUESTORE_ENDOPOINT>")
-    process.exit()
-} else {
-    kvEndpoint = 'http://' + process.argv[2]
+kvEndpoint = require('./common').getKeyvaluestoreEndpoint();
+if (!kvEndpoint){
+	console.log("Usage: node worker.js <KEYVALUESTORE_ENDOPOINT>")
+	console.log("Alternatively, specify MICRO_KEYVALUESTORE_ENDPOINT env variable.")
+	process.exit()
 }
 
 getServiceEndpoints()
@@ -67,7 +67,7 @@ function doWork() {
 					})
 				})
 			} else {
-				setTimeout(doWork, 5000)	
+				setTimeout(doWork, 5000)
 			}
 		} else {
 			console.log("Nothing to do at the moment")
@@ -104,3 +104,5 @@ function getServiceEndpoints() {
 		setTimeout(getServiceEndpoints, 1000)
 	}
 }
+
+console.log("Using keyvaluestore endpoint: ", kvEndpoint);
