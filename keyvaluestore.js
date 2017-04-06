@@ -5,7 +5,7 @@ const app = express()
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-const port = 8000
+const port = process.env.MICRO_KEYVALUESTORE_PORT || process.env.PORT || 9000;
 
 var keyValueStore = {}
 
@@ -36,3 +36,5 @@ app.listen(port, (err) => {
 
     console.log(`server is listening on ${port}`)
 })
+
+console.log("Running keyvaluestore on port: ", port);

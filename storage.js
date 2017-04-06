@@ -11,7 +11,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(fileUpload())
 
-const port = 8002
+const port = process.env.MICRO_STORAGE_PORT || process.env.PORT || 9002;
 
 if (process.argv.length < 3) {
     console.log("Usage: node storage.js <KEYVALUESTORE_ENDOPOINT>")
@@ -82,3 +82,5 @@ function startService() {
 		console.log(`Storage is listening on ${port}`)
 	})
 }
+
+console.log("Running storage on port: ", port);

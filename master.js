@@ -11,7 +11,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(fileUpload())
 
-const port = 8003
+const port = process.env.MICRO_MASTER_PORT || process.env.PORT || 9003;
 
 var dbEndpoint
 var storageEndpoint
@@ -145,3 +145,5 @@ function startService() {
 		console.log(`Master is listening on ${port}`)
 	})
 }
+
+console.log("Running master on port: ", port);

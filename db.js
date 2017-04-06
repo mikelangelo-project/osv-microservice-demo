@@ -8,7 +8,7 @@ const app = express()
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-const port = 8001
+const port = process.env.MICRO_DB_PORT || process.env.PORT || 9001;
 
 var dataStore = {}
 var oldestNotFinishedTask = 0
@@ -117,3 +117,5 @@ function startService() {
 		console.log(`Database is listening on ${port}`)
 	})
 }
+
+console.log("Running db on port: ", port);
