@@ -3,7 +3,6 @@ var bodyParser = require('body-parser');
 var fileUpload = require('express-fileupload')
 var request = require('request')
 var ip = require('ip');
-
 var os = require('os');
 
 const app = express()  
@@ -13,11 +12,11 @@ app.use(fileUpload())
 
 const port = process.env.MICRO_STORAGE_PORT || process.env.PORT || 9002;
 
-if (process.argv.length < 3) {
-    console.log("Usage: node storage.js <KEYVALUESTORE_ENDOPOINT>")
-    process.exit()
-} else {
-    kvEndpoint = 'http://' + process.argv[2]
+kvEndpoint = require('./common').getKeyvaluestoreEndpoint();
+if (!kvEndpoint){
+	console.log("Usage: node storage.js <KEYVALUESTORE_ENDOPOINT>")
+	console.log("Alternatively, specify MICRO_KEYVALUESTORE_ENDPOINT env variable.")
+	process.exit()
 }
 
 // Get DB IP and try to report it to the key-value registry
@@ -84,3 +83,4 @@ function startService() {
 }
 
 console.log("Running storage on port: ", port);
+console.log("Using keyvaluestore endpoint: ", kvEndpoint);

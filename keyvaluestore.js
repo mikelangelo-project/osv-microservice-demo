@@ -30,11 +30,11 @@ app.post('/:key/', function(req, res) {
 })
 
 app.listen(port, (err) => {  
-    if (err) {
-        return console.log('something bad happened', err)
-    }
+	if (err) {
+		return console.log('something bad happened', err)
+	}
 
-    console.log(`server is listening on ${port}`)
+	console.log(`server is listening on ${port}`)
 })
 
 console.log("Running keyvaluestore on port: ", port);
