@@ -1,0 +1,15 @@
+html
+  head
+    title MIKELANGELO Node Microservice Application
+  body
+    h1 MIKELANGELO Node Microservice Application
+    p Upload file for processing:
+    form(method="POST", action="/upload", encType="multipart/form-data")
+      input(type="file", name="image")
+      input(type="submit")
+    
+    p 
+      | Image will be uploaded to address:
+      b  #{service}
+
+    a(href="/") View result
