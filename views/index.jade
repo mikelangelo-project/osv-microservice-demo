@@ -1,0 +1,16 @@
+html
+  head
+    title MIKELANGELO Node Microservice Application
+  body
+    h1 MIKELANGELO Node Microservice Application    
+
+    p Result of image processing:
+    img(alt="Processed image" src="#{imgData}")
+
+    p #{message}
+
+    p 
+      | Image was downloaded from address:
+      b  #{service}
+
+    a(href="/upload") Upload .png image for processing

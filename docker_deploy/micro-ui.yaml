@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: micro-ui
+  namespace: default
+spec:
+  replicas: 1
+  template:  
+    metadata:
+      labels:
+          case: micro-ui      
+    spec:
+      containers:
+      - name: web
+        image: mike/osv-microservice-demo-ui
+        imagePullPolicy: Never
+        env:
+        - name: MICRO_MASTER_ENDPOINT
+          value: http://micro-master.default.svc.cluster.local 
+        ports:
+        - name: web
+          containerPort: 80
