@@ -2,4 +2,4 @@ name: node-micro
 title: Node Microservices
 author: lemmy
 require:
-- eu.mikelangelo-project.app.node-4.2.6
+- eu.mikelangelo-project.app.node-4.4.5
