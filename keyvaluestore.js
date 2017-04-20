@@ -8,8 +8,11 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 const port = process.env.MICRO_KEYVALUESTORE_PORT || process.env.PORT || 9000;
 
 var keyValueStore = {}
+keyValueStore['masterendpoint'] = process.env.MICRO_MASTER_ENDPOINT;
+keyValueStore['dbendpoint'] = process.env.MICRO_DB_ENDPOINT;
+keyValueStore['storageendpoint'] = process.env.MICRO_STORAGE_ENDPOINT;
 
-app.get('/:key/', (req, res) => {  
+app.get('/:key/', (req, res) => {
 	var key = req.params.key
 
 	if (key in keyValueStore) {
@@ -25,7 +28,11 @@ app.post('/:key/', function(req, res) {
 
 	console.log(key + "=" + value)
 
-	keyValueStore[key] = value
+	if (!keyValueStore[key]) {
+		keyValueStore[key] = value;
+	} else {
+		console.log('Prevented updating keyvaluestore, key = ' + key, ', value = ' + value);
+	}
 	res.send('')
 })
 

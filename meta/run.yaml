@@ -28,3 +28,30 @@ config_set:
       main: /worker.js
       env:
          MICRO_KEYVALUESTORE_ENDPOINT: $MICRO_KEYVALUESTORE_ENDPOINT
+
+   virtlet_keyvaluestore:
+      main: keyvaluestore.js
+      env:
+         PORT: 9000
+         MICRO_MASTER_ENDPOINT: micro-master.default.svc.cluster.local
+         MICRO_DB_ENDPOINT: micro-db.default.svc.cluster.local
+         MICRO_STORAGE_ENDPOINT: micro-storage.default.svc.cluster.local
+   virtlet_db:
+      main: db.js
+      env:
+         PORT: 9001
+         MICRO_KEYVALUESTORE_ENDPOINT: micro-keyvaluestore.default.svc.cluster.local
+   virtlet_storage:
+      main: storage.js
+      env:
+         PORT: 9002
+         MICRO_KEYVALUESTORE_ENDPOINT: micro-keyvaluestore.default.svc.cluster.local
+   virtlet_master:
+      main: master.js
+      env:
+         PORT: 9003
+         MICRO_KEYVALUESTORE_ENDPOINT: micro-keyvaluestore.default.svc.cluster.local
+   virtlet_worker:
+      main: worker.js
+      env:
+         MICRO_KEYVALUESTORE_ENDPOINT: micro-keyvaluestore.default.svc.cluster.local

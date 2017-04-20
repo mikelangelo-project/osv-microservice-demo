@@ -28,7 +28,7 @@ Once the services are registered, the application can be used. The collaboration
 
 ## Using the Application
 
-Before you can use the application, ensure you have Node.js installed (version 4.2.6 was used for this tutorial). Navigate to the root directory of this project and install required packages
+Before you can use the application, ensure you have Node.js installed (version 4.4.5 was used for this tutorial). Navigate to the root directory of this project and install required packages
 
 ```
 $ npm install
@@ -127,7 +127,7 @@ name: node-micro
 title: Node Microservices
 author: lemmy
 require:
-- eu.mikelangelo-project.app.node-4.2.6
+- eu.mikelangelo-project.app.node-4.4.5
 ```
 
 `name`, `title` and `author` are used by Capstan mainly for displaying this information at various places. The `require` lists all packages that need to be collected while composing target unikernel (target VM comprised of bootloader, OSv kerenel and your application). To get a list of packages available for download, use `capstan package search` command. When looking for a specific package, add the name, for example
