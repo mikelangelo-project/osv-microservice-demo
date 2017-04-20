@@ -5,6 +5,30 @@
 runtime: node
 
 config_set: 
+   keyvaluestore:
+      main: /keyvaluestore.js
+      env:
+         PORT: 9000
+   db:
+      main: /db.js
+      env:
+         PORT: 9001         
+         MICRO_KEYVALUESTORE_ENDPOINT: $MICRO_KEYVALUESTORE_ENDPOINT
+   storage:
+      main: /storage.js
+      env:
+         PORT: 9002
+         MICRO_KEYVALUESTORE_ENDPOINT: $MICRO_KEYVALUESTORE_ENDPOINT
+   master:
+      main: /master.js
+      env:
+         PORT: 9003
+         MICRO_KEYVALUESTORE_ENDPOINT: $MICRO_KEYVALUESTORE_ENDPOINT
+   worker:
+      main: /worker.js
+      env:
+         MICRO_KEYVALUESTORE_ENDPOINT: $MICRO_KEYVALUESTORE_ENDPOINT
+
    virtlet_keyvaluestore:
       main: keyvaluestore.js
       env:
