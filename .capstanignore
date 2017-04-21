@@ -1,0 +1,27 @@
+#
+# Here we specify what files/folders should NOT be uploaded to the unikernel.
+#
+
+# Whole folders
+/.idea
+/bin
+/doc
+/docker_deploy
+
+# Ignore everything inside /data/storage/, /data/worker/, ... but keep the (empty) directories.
+/data/*/*
+
+# Specific files
+/package.json
+/*.png
+
+# Ignore any clutter files that usually appear inside node_modules
+/**/*.md
+/**/AUTHORS
+/**/LICENSE
+/**/.editorconfig
+/**/.gitattributes
+/**/.npmignore
+/**/.tern-project
+/**/.travis.yml
+/**/.keep
