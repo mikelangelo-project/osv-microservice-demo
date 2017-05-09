@@ -1,0 +1,114 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: micro-keyvaluestore
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: micro-keyvaluestore
+      labels:
+        case: micro-keyvaluestore
+      annotations:
+        kubernetes.io/target-runtime: virtlet        
+    spec:
+      affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
+      containers:
+        - name: micro-keyvaluestore
+          image: virtlet/image-service.kube-system/micro-keyvaluestore.qemu
+          ports:
+          - name: app-port
+            containerPort: 9000
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: micro-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: micro-master
+      labels:
+        case: micro-master
+      annotations:
+        kubernetes.io/target-runtime: virtlet        
+    spec:
+      affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
+      containers:
+        - name: micro-master
+          image: virtlet/image-service.kube-system/micro-master.qemu
+          ports:
+          - name: app-port
+            containerPort: 9003
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: micro-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: micro-db
+      labels:
+        case: micro-db
+      annotations:
+        kubernetes.io/target-runtime: virtlet        
+    spec:
+      affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
+      containers:
+        - name: micro-db
+          image: virtlet/image-service.kube-system/micro-db.qemu
+          ports:
+          - name: app-port
+            containerPort: 9001
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: micro-storage
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: micro-storage
+      labels:
+        case: micro-storage
+      annotations:
+        kubernetes.io/target-runtime: virtlet        
+    spec:
+      affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
+      containers:
+        - name: micro-storage
+          image: virtlet/image-service.kube-system/micro-storage.qemu
+          ports:
+          - name: app-port
+            containerPort: 9002
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: micro-worker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: micro-worker
+      labels:
+        case: micro-worker
+      annotations:
+        kubernetes.io/target-runtime: virtlet        
+    spec:
+      affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
+      containers:
+        - name: micro-worker
+          image: virtlet/image-service.kube-system/micro-worker.qemu
