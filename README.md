@@ -345,34 +345,19 @@ within some public server, then you won't need imageserver at all.
 
 ### Deploy microservices
 
-To deploy the `osv-microservice-demo` application you need to:
+To deploy `osv-microservice-demo` application use the two yaml blueprints given in `virtlet_deploy`
+folder:
 
-1. compose OSv unikernels
-2. upload OSv unikernels to the imageserver
-3. create k8s Services and Deployments
-
-#### Compose and Upload
-Section [Here Come Unikernels](#herecomeunikernels) describes how to prepare application to run it
-locally using OSv unikernels. Similar steps need to be taken when composing them to run on Kubernetes,
-and luckily there is a script to automate it (replace imageserver pod ID to match your environment):
-```bash
-$ npm install
-$ ./virtlet_deploy/compose-and-upload-images.sh image-server-1782580915-zv2w3
-```
-
-Script `compose-and-upload-images.sh` first composes unikernel for each service and sets appropriate
-boot command for it. Then it uploads the unikernel to the imageserver. When the script finishes, your
-Kubernetes cluster is ready to actually boot unikernels.
-
-#### Create k8s Services and Deployments
-
-There are two yaml files given in `virtlet_deploy` folder: **micro-services.yaml** defines
+* **micro-services.yaml** defines
 [k8s Services](https://kubernetes.io/docs/concepts/services-networking/service/)
-for our application while **micro-deployments** defines
+for our application
+
+* **micro-deployments** defines
 [k8s Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/).
+
 The former is responsible for microservices to be addressable by name (regardelss the actual IP),
-while the latter specify what unikernels to deploy and how many.
-Go ahead, deploy `osv-microservice-demo` application:
+while the latter specifies what unikernels to deploy and how many.
+Go ahead, deploy application on Kubernetes cluster:
 
 ```bash
 // Deploy k8s Service definitions for osv-microservice-demo
@@ -382,9 +367,9 @@ $ kubectl create -f ./virtlet_deploy/micro-services.yaml
 $ kubectl create -f ./virtlet_deploy/micro-deployments.yaml
 ```
 
-### Build frontend container:
-
-One can deploy frontend in Docker container by following [this guide](docker_deploy/README.md).
+If you examine *micro-deployments.yaml* content you will notice that unikernel images are
+obtained from S3 object store. We've prepared these images for you using Capstan tool.
+Read [this document](doc/run-on-kubernetes.md) to learn how to prepare them on your own.
 
 ### Result
 

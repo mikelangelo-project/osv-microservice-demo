@@ -1,14 +1,14 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: micro-ui
+  name: micro-ui-docker
   namespace: default
 spec:
   replicas: 1
   template:  
     metadata:
       labels:
-          case: micro-ui      
+          case: micro-ui-docker
     spec:
       containers:
       - name: web

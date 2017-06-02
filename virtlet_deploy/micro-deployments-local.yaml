@@ -15,7 +15,7 @@ spec:
       affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
       containers:
         - name: micro-keyvaluestore
-          image: virtlet/s3.amazonaws.com/osv-microservice-demo/micro-keyvaluestore.qcow2
+          image: virtlet/image-service.kube-system/micro-keyvaluestore.qemu
           resources:
             limits:
               memory: 1024Mi
@@ -42,7 +42,7 @@ spec:
       affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
       containers:
         - name: micro-master
-          image: virtlet/s3.amazonaws.com/osv-microservice-demo/micro-master.qcow2
+          image: virtlet/image-service.kube-system/micro-master.qemu
           resources:
             limits:
               memory: 1024Mi
@@ -69,7 +69,7 @@ spec:
       affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
       containers:
         - name: micro-db
-          image: virtlet/s3.amazonaws.com/osv-microservice-demo/micro-db.qcow2
+          image: virtlet/image-service.kube-system/micro-db.qemu
           resources:
             limits:
               memory: 1024Mi
@@ -96,7 +96,7 @@ spec:
       affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
       containers:
         - name: micro-storage
-          image: virtlet/s3.amazonaws.com/osv-microservice-demo/micro-storage.qcow2
+          image: virtlet/image-service.kube-system/micro-storage.qemu
           resources:
             limits:
               memory: 1024Mi
@@ -123,31 +123,7 @@ spec:
       affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
       containers:
         - name: micro-worker
-          image: virtlet/s3.amazonaws.com/osv-microservice-demo/micro-worker.qcow2
-          resources:
-            limits:
-              memory: 1024Mi
-
----
-
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: micro-ui
-spec:
-  replicas: 1
-  template:
-    metadata:
-      name: micro-ui
-      labels:
-        case: micro-ui
-      annotations:
-        kubernetes.io/target-runtime: virtlet        
-    spec:
-      affinity: {"nodeAffinity": {"requiredDuringSchedulingIgnoredDuringExecution": {"nodeSelectorTerms": [{"matchExpressions": [{"key": "extraRuntime", "operator": "In", "values": ["virtlet"]}]}]}}}
-      containers:
-        - name: micro-ui
-          image: virtlet/s3.amazonaws.com/osv-microservice-demo/micro-ui.qcow2
+          image: virtlet/image-service.kube-system/micro-worker.qemu
           resources:
             limits:
               memory: 1024Mi

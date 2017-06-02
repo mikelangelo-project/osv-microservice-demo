@@ -28,6 +28,10 @@ config_set:
       main: /worker.js
       env:
          MICRO_KEYVALUESTORE_ENDPOINT: $MICRO_KEYVALUESTORE_ENDPOINT
+   virtlet_ui:
+      main: ui.js
+      env:
+         MICRO_MASTER_ENDPOINT: $MICRO_MASTER_ENDPOINT      
 
    virtlet_keyvaluestore:
       main: keyvaluestore.js
@@ -55,3 +59,8 @@ config_set:
       main: worker.js
       env:
          MICRO_KEYVALUESTORE_ENDPOINT: micro-keyvaluestore.default.svc.cluster.local
+   virtlet_ui:
+      main: ui.js
+      env:
+         MICRO_MASTER_ENDPOINT: http://micro-master.default.svc.cluster.local
+         
